@@ -2,15 +2,45 @@
 import tweepy
 from textblob import TextBlob
 
-# import numpy as np
-# from sklearn.svm import SVR
-# import matplotlib.pyplot as plt
+import csv
+import numpy as np
+from sklearn.svm import SVR
+import matplotlib.pyplot as plt
+
+# plt.switch_backend('new_')
 
 import tflearn
 from tflearn.data_utils import to_categorical, pad_sequences
 from tflearn.datasets import imdb
 
-# plt.switch_backend('new_')
+
+dates = []
+prices = []
+
+def get_data(filename):
+    with open(filename, 'r') as csvfile:
+        csvFileReader = csv.reader(csvfile)
+        next(csvFileReader)
+        for row in csvFileReader:
+            dates.append(int(row[0].split('-')[0]))
+            prices.append(float(row[1]))
+    return
+
+def predict_prices(dates, prices, x):
+    dates = np.reshape(dates, (len(dates), 1))
+
+    svr_lin = SVR(kernel= 'linear', C=1e3)
+    svr_poly = SVR(kernel= 'poly', C=1e3, degree = 2)
+    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+    svr_lin.fit(dates, prices)
+    svr_poly.fit(dates, prices)
+    svr_
+
+
+
+
+
+
 
 consumer_key = 'BnlEfaOWDLUt9lHFO2CyMFXLZ'
 consumer_secret = 'sT0Gx7EGtu1uW7lll3AfhK6gOfzIT0OvWiT9b5JUXbzNn1I8KS'
