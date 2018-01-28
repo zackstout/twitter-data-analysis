@@ -1,7 +1,11 @@
 
-
+#Siraj:
 import tweepy
 from textblob import TextBlob
+#codedex:
+from tweepy.streaming import StreamListener
+from tweepy import Stream
+# import urllib
 
 consumer_key = 'BnlEfaOWDLUt9lHFO2CyMFXLZ'
 consumer_secret = 'sT0Gx7EGtu1uW7lll3AfhK6gOfzIT0OvWiT9b5JUXbzNn1I8KS'
@@ -16,7 +20,20 @@ api = tweepy.API(auth)
 
 public_tweets = api.search('Trump')
 
-for tweet in public_tweets:
-    print(tweet.text)
-    analysis = TextBlob(tweet.text)
-    print(analysis.sentiment)
+# for tweet in public_tweets:
+#     print(tweet.text)
+#     analysis = TextBlob(tweet.text)
+#     print(analysis.sentiment)
+
+
+class listener(StreamListener):
+    def on_data(self, data):
+        print(data)
+        return True
+    def on_error(self, status):
+        print(status)
+
+twitterStream = Stream(auth, listener())
+twitterStream.filter(track=['car'])
+
+# Note: if you run this, it will print a continuous stream to the terminal. Close with ctrl+C.
