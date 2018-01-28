@@ -34,8 +34,25 @@ def predict_prices(dates, prices, x):
     svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
     svr_lin.fit(dates, prices)
     svr_poly.fit(dates, prices)
-    svr_
+    svr_rbf.fit(dates, prices)
 
+    plt.scatter(dates, prices, color='black', label='data')
+    plt.plot(dates, svr_rbf.predict(dates), color='red', label='RBF model')
+
+
+    plt.xlabel('Date')
+    plt.ylabel('Price')
+    plt.title('Support Vector Regression')
+    plt.legend()
+    plt.show()
+
+    return svr_rbf.predict(x)[0], svr_lin.predict(x)[0], svr_poly.predict(x)[0]
+
+get_data(csv)
+
+predicted_price = predict_price(dates, prices, 29)
+
+print(predicted_price)
 
 
 
@@ -62,6 +79,7 @@ public_tweets = api.search('Trump')
 
 
 
+# First example of Tflearn:
 train, test, _ = imdb.load_data(path='imdb.pkl', n_words=10000, valid_portion=0.1)
 trainX, trainY = train
 testX, testY = test
@@ -85,12 +103,45 @@ model = tflearn.DNN(net, tensorboard_verbose=0)
 # oops looks like we need an = after validation_set
 model.fit(trainX, trainY, validation_set=(testX, testY), show_metric=True, batch_size=32)
 
-
-
-
-
-
 #Note, it's gonna take a minute or two or three to run the above code. Ok or way more. But it's doing the thing!! And loss is going down!!!!!!
+
+
+
+# Second example of Tflearn (from their documentation):
+from tflearn.datasets import titanic
+titanic.download_dataset('titanic_dataset.csv')
+from tflearn.data_utils import load_csv
+data, labels = load_csv('titanic_dataset.csv', target_column=0, categorical_labels=True, n_classes=2)
+
+def preprocess(data, cols_to_ignore):
+    for id in sorted(cols_to_ignore, reverse=True):
+        [r.pop(id) for r in data]
+    for i in range(len(data)):
+        data[i][1] = 1. if data[i][1] == 'female' else 0.
+    return np.array(data, dtype=np.float32)
+
+to_ignore = [1, 6]
+data = preprocess(data, to_ignore)
+
+# Build the network:
+net = tflearn.input_data(shape=[None, 6])
+net = tflearn.fully_connected(net, 32)
+net = tflearn.fully_connected(net, 32)
+net = tflearn.fully_connected(net, 2, activation='softmax')
+net = tflearn.regression(net)
+
+model = tflearn.DNN(net)
+model.fit(data, labels, n_epoch=10, batch_size=16, show_metric=True)
+
+dicaprio = [3, 'Jack Dawson', 'male', 19, 0, 0, 'N/A', 5.0000]
+winslet = [1, 'Rose DeWitt Bukater', 'female', 17, 1, 2, 'N/A', 100.0000]
+dicaprio, winslet = preprocess([dicaprio, winslet])
+print('D rate:', pred[0][1])
+print('W rate:', pred[1][1])
+
+
+
+
 
 
 
