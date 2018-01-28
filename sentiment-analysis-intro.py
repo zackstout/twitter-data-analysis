@@ -8,6 +8,8 @@ from tweepy import Stream
 # import urllib
 import json
 
+import sentiment_mod as s
+
 consumer_key = 'BnlEfaOWDLUt9lHFO2CyMFXLZ'
 consumer_secret = 'sT0Gx7EGtu1uW7lll3AfhK6gOfzIT0OvWiT9b5JUXbzNn1I8KS'
 
@@ -38,9 +40,20 @@ public_tweets = api.search('Trump')
 class listener(StreamListener):
     def on_data(self, data):
         all_data = json.loads(data)
+
         tweet = all_data['text']
-        print(tweet)
+
+        sentiment_value, confidence = s.sentiment(tweet)
+        print(tweet, sentiment_value, confidence)
+
+        if confidence*100 >= 80:
+            output = open("twitter-out.txt", "a")
+            output.write(sentiment_value)
+            output.write('\n')
+            output.close()
+
         return True
+
     def on_error(self, status):
         print(status)
 
