@@ -6,6 +6,7 @@ from textblob import TextBlob
 from tweepy.streaming import StreamListener
 from tweepy import Stream
 # import urllib
+import json
 
 consumer_key = 'BnlEfaOWDLUt9lHFO2CyMFXLZ'
 consumer_secret = 'sT0Gx7EGtu1uW7lll3AfhK6gOfzIT0OvWiT9b5JUXbzNn1I8KS'
@@ -26,9 +27,19 @@ public_tweets = api.search('Trump')
 #     print(analysis.sentiment)
 
 
+#codedex:
+# class listener(StreamListener):
+#     def on_data(self, data):
+#         print(data)
+#         return True
+#     def on_error(self, status):
+#         print(status)
+
 class listener(StreamListener):
     def on_data(self, data):
-        print(data)
+        all_data = json.loads(data)
+        tweet = all_data['text']
+        print(tweet)
         return True
     def on_error(self, status):
         print(status)
